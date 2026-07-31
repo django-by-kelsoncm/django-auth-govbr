@@ -14,3 +14,19 @@ A biblioteca implementa o padrão **OpenID Connect (OIDC)** com **PKCE (Proof Ke
 - **Backend Extensível**: Permite customizar criação e atualização de usuários (`GovBrAuthBackend`).
 - **Mapeamento Flexível de Atributos**: Converta automaticamente campos do Gov.br (`sub`, `name`, `email`) para o modelo `User` do Django.
 - **100% de Cobertura de Testes Unitários e de Integração**.
+
+---
+
+## Documentação
+
+Explore os tópicos detalhados da documentação:
+
+- 📦 **[Instalação](installation.md)** - Requisitos de ambiente e guia de instalação via `pip`, `uv` ou `poetry`.
+- ⚙️ **[Configuração](configuration.md)** - Guia passo a passo para integrar com `settings.py` e `urls.py`.
+- 🔐 **[Fluxo & PKCE](auth-flow.md)** - Como funciona o fluxo de autenticação OIDC e geração do desafio PKCE.
+- 🗺️ **[Mapeamento de Atributos](attribute-mapping.md)** - Mapeamento de dados do perfil Gov.br para os atributos do `User` Django.
+- 🌐 **[Escopos & Ambientes](scopes.md)** - Configuração de ambientes de homologação (`staging`) e produção (`production`), além de escopos OIDC.
+- 🚪 **[Single Sign-Out (Logout)](logout.md)** - Como implementar e configurar o logout federado.
+- 📚 **[Referência da API](api-reference.md)** - Detalhes e assinaturas das views, backend de autenticação e cliente HTTP.
+- 📝 **[Histórico de Mudanças](changelog.md)** - Notas de versão e histórico de alterações do projeto.
+
