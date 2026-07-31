@@ -3,6 +3,7 @@ site_description: Django OAuth2/OIDC authentication backend for Gov.br (Brazil's
 site_author: kelsoncm
 repo_url: https://github.com/django-by-kelsoncm/django-auth-govbr
 repo_name: django-by-kelsoncm/django-auth-govbr
+site_url: https://django-by-kelsoncm.github.io/django-auth-govbr/
 
 theme:
   name: readthedocs
