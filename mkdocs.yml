@@ -1,0 +1,34 @@
+site_name: django-auth-govbr
+site_description: Django OAuth2/OIDC authentication backend for Gov.br (Brazil's Federal Government Login Único)
+site_author: kelsoncm
+repo_url: https://github.com/django-by-kelsoncm/django-auth-govbr
+repo_name: django-by-kelsoncm/django-auth-govbr
+
+theme:
+  name: material
+  language: pt
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - content.code.annotate
+  palette:
+    primary: indigo
+    accent: blue
+
+nav:
+  - Início: index.md
+  - Instalação: installation.md
+  - Configuração: configuration.md
+  - Fluxo & PKCE: auth-flow.md
+  - Mapeamento de Atributos: attribute-mapping.md
+  - Escopos & Ambientes: scopes.md
+  - Single Sign-Out (Logout): logout.md
+  - Referência da API: api-reference.md
+  - Histórico de Mudanças: changelog.md
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - admonition
+  - toc:
+      permalink: true
