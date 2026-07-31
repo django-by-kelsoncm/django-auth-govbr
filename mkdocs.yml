@@ -5,15 +5,8 @@ repo_url: https://github.com/django-by-kelsoncm/django-auth-govbr
 repo_name: django-by-kelsoncm/django-auth-govbr
 
 theme:
-  name: material
-  language: pt
-  features:
-    - navigation.tabs
-    - navigation.sections
-    - content.code.annotate
-  palette:
-    primary: indigo
-    accent: blue
+  name: readthedocs
+  highlightjs: true
 
 nav:
   - Início: index.md
