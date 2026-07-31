@@ -14,7 +14,9 @@ O **`django-auth-govbr`** fornece suporte nativo ao enquadramento de logout OIDC
 ## Exemplo de Link nos Templates
 
 ```html
+{% raw %}
 <a href="{% url 'django_govbr_auth:logout' %}">Sair (Logout Gov.br)</a>
+{% endraw %}
 ```
 
 ## Configuração da URI de Retorno
