@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="kelsoncm" /><link rel="canonical" href="https://django-by-kelsoncm.github.io/django-auth-govbr/api-reference/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Referência da API - django-auth-govbr</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Refer\u00eancia da API";
+        var mkdocs_page_input_path = "api-reference.md";
+        var mkdocs_page_url = "/django-auth-govbr/api-reference/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> django-auth-govbr
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Início</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../installation/">Instalação</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../configuration/">Configuração</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../auth-flow/">Fluxo & PKCE</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../attribute-mapping/">Mapeamento de Atributos</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../user-info-pipeline/">Pipeline de Perfil de Usuário</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../fetchers/">Fetchers (Busca de Dados)</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../mappers/">Mappers (Mapeamento)</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../scopes/">Escopos & Ambientes</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../logout/">Single Sign-Out (Logout)</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Referência da API</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#django_govbr_authbackendsgovbrauthbackend">django_govbr_auth.backends.GovBrAuthBackend</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#metodos-principais">Métodos Principais</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#authenticaterequest-govbr_user_infonone-kwargs">authenticate(request, govbr_user_info=None, **kwargs)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#get_user_attrsgovbr_user_info-cfg">get_user_attrs(govbr_user_info, cfg)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#get_lookup_valueattrs-lookup_field">get_lookup_value(attrs, lookup_field)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#get_or_create_userlookup_field-lookup_value-mapped_attrs-cfg">get_or_create_user(lookup_field, lookup_value, mapped_attrs, cfg)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#create_userlookup_field-lookup_value-mapped_attrs-cfg">create_user(lookup_field, lookup_value, mapped_attrs, cfg)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#update_useruser-mapped_attrs-cfg">update_user(user, mapped_attrs, cfg)</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#django_govbr_authclientgovbroauth2client">django_govbr_auth.client.GovBrOAuth2Client</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#metodos">Métodos</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#django_govbr_authexceptions">django_govbr_auth.exceptions</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../changelog/">Histórico de Mudanças</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">django-auth-govbr</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Referência da API</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/django-by-kelsoncm/django-auth-govbr/edit/master/docs/api-reference.md">Edit on django-by-kelsoncm/django-auth-govbr</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="referencia-da-api">Referência da API<a class="headerlink" href="#referencia-da-api" title="Permanent link">&para;</a></h1>
+<h2 id="django_govbr_authbackendsgovbrauthbackend"><code>django_govbr_auth.backends.GovBrAuthBackend</code><a class="headerlink" href="#django_govbr_authbackendsgovbrauthbackend" title="Permanent link">&para;</a></h2>
+<p>Backend de autenticação responsável por integrar a resposta do Gov.br com o modelo de usuário do Django.</p>
+<h3 id="metodos-principais">Métodos Principais<a class="headerlink" href="#metodos-principais" title="Permanent link">&para;</a></h3>
+<h4 id="authenticaterequest-govbr_user_infonone-kwargs"><code>authenticate(request, govbr_user_info=None, **kwargs)</code><a class="headerlink" href="#authenticaterequest-govbr_user_infonone-kwargs" title="Permanent link">&para;</a></h4>
+<p>Método principal chamado pelo Django. Processa as informações do usuário e retorna a instância de <code>User</code>.</p>
+<h4 id="get_user_attrsgovbr_user_info-cfg"><code>get_user_attrs(govbr_user_info, cfg)</code><a class="headerlink" href="#get_user_attrsgovbr_user_info-cfg" title="Permanent link">&para;</a></h4>
+<p>Converte o perfil bruto em um dicionário de atributos do modelo <code>User</code>.</p>
+<h4 id="get_lookup_valueattrs-lookup_field"><code>get_lookup_value(attrs, lookup_field)</code><a class="headerlink" href="#get_lookup_valueattrs-lookup_field" title="Permanent link">&para;</a></h4>
+<p>Extrai o valor de busca (ex: valor do <code>username</code>/<code>sub</code>) do dicionário mapeado.</p>
+<h4 id="get_or_create_userlookup_field-lookup_value-mapped_attrs-cfg"><code>get_or_create_user(lookup_field, lookup_value, mapped_attrs, cfg)</code><a class="headerlink" href="#get_or_create_userlookup_field-lookup_value-mapped_attrs-cfg" title="Permanent link">&para;</a></h4>
+<p>Busca o usuário no banco local ou chama <code>create_user</code> caso ele não exista. Lança <code>GovBrUserNotAllowedError</code> se <code>CREATE_USER</code> for <code>False</code>.</p>
+<h4 id="create_userlookup_field-lookup_value-mapped_attrs-cfg"><code>create_user(lookup_field, lookup_value, mapped_attrs, cfg)</code><a class="headerlink" href="#create_userlookup_field-lookup_value-mapped_attrs-cfg" title="Permanent link">&para;</a></h4>
+<p>Instancia e salva um novo usuário no banco de dados.</p>
+<h4 id="update_useruser-mapped_attrs-cfg"><code>update_user(user, mapped_attrs, cfg)</code><a class="headerlink" href="#update_useruser-mapped_attrs-cfg" title="Permanent link">&para;</a></h4>
+<p>Sincroniza os atributos alterados no login de um usuário existente.</p>
+<hr />
+<h2 id="django_govbr_authclientgovbroauth2client"><code>django_govbr_auth.client.GovBrOAuth2Client</code><a class="headerlink" href="#django_govbr_authclientgovbroauth2client" title="Permanent link">&para;</a></h2>
+<p>Cliente de baixo nível para interação HTTP com as APIs do Gov.br.</p>
+<h3 id="metodos">Métodos<a class="headerlink" href="#metodos" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>get_authorization_url(state, code_challenge)</code>: Retorna a URL completa de autorização com parâmetros PKCE (<code>S256</code>).</li>
+<li><code>exchange_code_for_token(code, code_verifier, timeout=30)</code>: Troca o código pelo <code>access_token</code> e <code>id_token</code>.</li>
+<li><code>get_user_info(access_token, timeout=30)</code>: Consulta o perfil do usuário no endpoint <code>/userinfo</code>.</li>
+<li><code>get_logout_url(id_token_hint=None, post_logout_redirect_uri=None)</code>: Retorna a URL de logout OIDC.</li>
+</ul>
+<hr />
+<h2 id="django_govbr_authexceptions"><code>django_govbr_auth.exceptions</code><a class="headerlink" href="#django_govbr_authexceptions" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>GovBrAuthError</code>: Exceção base do pacote.</li>
+<li><code>GovBrStateMismatchError</code>: Erro de divergência de estado (CSRF).</li>
+<li><code>GovBrTokenError</code>: Falha na troca do código de autorização pelo token.</li>
+<li><code>GovBrUserInfoError</code>: Falha ao consultar os dados do perfil do usuário.</li>
+<li><code>GovBrUserNotAllowedError</code>: Lançado quando a criação de novos usuários está desativada (<code>CREATE_USER=False</code>).</li>
+<li><code>GovBrAuthenticationError</code>: Erro geral durante o fluxo de autenticação.</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../logout/" class="btn btn-neutral float-left" title="Single Sign-Out (Logout)"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../changelog/" class="btn btn-neutral float-right" title="Histórico de Mudanças">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/django-by-kelsoncm/django-auth-govbr" class="fa fa-code-fork" style="color: #fcfcfc"> django-by-kelsoncm/django-auth-govbr</a>
+        </span>
+    
+    
+      <span><a href="../logout/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../changelog/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
