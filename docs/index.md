@@ -25,6 +25,9 @@ Explore os tópicos detalhados da documentação:
 - ⚙️ **[Configuração](configuration.md)** - Guia passo a passo para integrar com `settings.py` e `urls.py`.
 - 🔐 **[Fluxo & PKCE](auth-flow.md)** - Como funciona o fluxo de autenticação OIDC e geração do desafio PKCE.
 - 🗺️ **[Mapeamento de Atributos](attribute-mapping.md)** - Mapeamento de dados do perfil Gov.br para os atributos do `User` Django.
+- 🔄 **[Pipeline de Perfil de Usuário](user-info-pipeline.md)** - Como a Cadeia de Responsabilidade consulta e processa o perfil do cidadão.
+- 📥 **[Fetchers (Busca de Dados)](fetchers.md)** - Detalhes e exemplos da cadeia de busca de dados do Gov.br e APIs externas.
+- 🛠️ **[Mappers (Mapeamento)](mappers.md)** - Detalhes e exemplos da cadeia de mapeamento de atributos para o modelo `User`.
 - 🌐 **[Escopos & Ambientes](scopes.md)** - Configuração de ambientes de homologação (`staging`) e produção (`production`), além de escopos OIDC.
 - 🚪 **[Single Sign-Out (Logout)](logout.md)** - Como implementar e configurar o logout federado.
 - 📚 **[Referência da API](api-reference.md)** - Detalhes e assinaturas das views, backend de autenticação e cliente HTTP.
