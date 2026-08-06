@@ -47,6 +47,10 @@ LOGOUT_REDIRECT_URL = "/"
 - **`SCOPES`** (`list`, padrão: `["openid", "email", "profile"]`): Lista de escopos OIDC solicitados durante a autorização.
 - **`USER_LOOKUP_FIELD`** (`str`, padrão: `"username"`): Campo do modelo `User` utilizado para buscar e identificar unicamente o usuário localmente.
 - **`USER_ATTR_MAP`** (`dict`, padrão: `DEFAULT_USER_ATTR_MAP`): Mapeamento de atributos retornado pelo `/userinfo` para o modelo `User`.
+- **`USER_INFO_FETCHERS`** (`list`, padrão: `["django_govbr_auth.fetchers.DefaultEndpointsUserInfoFetcher"]`): Lista de classes fetcher executadas na Cadeia de Responsabilidade.
+- **`USER_INFO_ENDPOINTS`** (`list`, padrão: `["/userinfo"]`): Lista de endpoints OIDC/API a consultar e mesclar.
+- **`USER_INFO_MAPPERS`** (`list`, padrão: `["django_govbr_auth.mappers.DefaultAttrMapUserMapper"]`): Lista de classes mapper executadas na Cadeia de Responsabilidade.
+- **`USER_JSON_FIELD`** (`str`, padrão: `None`): Campo `JSONField` para gravar a resposta bruta da API do Gov.br no modelo `User`.
 - **`CREATE_USER`** (`bool`, padrão: `True`): Se definido como `False`, lança `GovBrUserNotAllowedError` caso o usuário ainda não possua conta local.
 - **`USER_DEFAULTS`** (`dict`, padrão: `{"is_active": True}`): Atributos padrão aplicados na criação e sincronizados a cada login.
 - **`FIRST_USER_DEFAULTS`** (`dict`, padrão: `None`): Atributos aplicados exclusivamente ao primeiro usuário criado no sistema (ex: `{"is_superuser": True, "is_staff": True}`).
@@ -54,3 +58,4 @@ LOGOUT_REDIRECT_URL = "/"
 - **`UPDATE_FIELDS_ON_LOGIN`** (`list` ou `None`, padrão: `None`): Lista de campos atualizados a cada login do usuário (`None` representa todos).
 - **`DIRECT_REDIRECT`** (`bool`, padrão: `True`): Se `True`, o usuário é redirecionado imediatamente ao Gov.br. Se `False`, renderiza a página intermediária `django_govbr_auth/login.html`.
 - **`POST_LOGOUT_REDIRECT_URI`** (`str`, padrão: `None`): URI de retorno após realizar o logout federado OIDC.
+- **`BACKEND`** (`str`, padrão: `"django_govbr_auth.backends.GovBrAuthBackend"`): Caminho da classe backend de autenticação.

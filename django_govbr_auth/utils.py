@@ -7,35 +7,19 @@ from django.core.exceptions import ImproperlyConfigured
 STAGING_BASE_URL = "https://sso.staging.acesso.gov.br"
 PRODUCTION_BASE_URL = "https://sso.acesso.gov.br"
 
-# Default mapping: user model field → Gov.br response key.
-# A tuple key means "split the Gov.br value on the first space and assign
-# the first part to key[0] and the remainder to key[1]".
 DEFAULT_USER_ATTR_MAP = {
     "username": "sub",
     "email": "email",
     ("first_name", "last_name"): "name",
 }
 
+DEFAULT_GOVBR_ENDPOINTS = [
+    "/userinfo",
+]
+
 
 def get_govbr_settings():
-    """Read and validate GOVBR_AUTH settings from Django settings.
-
-    Expects a single GOVBR_AUTH dictionary with configuration:
-
-    GOVBR_AUTH = {
-        'CLIENT_ID': 'your-id',
-        'CLIENT_SECRET': 'your-secret',
-        'REDIRECT_URI': 'https://example.com/callback/',
-        'ENVIRONMENT': 'staging',  # 'staging' or 'production' (default: 'staging')
-        'BASE_URL': None,  # optional override
-        'SCOPES': ['openid', 'email', 'profile'],  # optional
-        'USER_LOOKUP_FIELD': 'username',  # optional
-        'USER_ATTR_MAP': {...},  # optional
-        'USER_JSON_FIELD': None,  # optional
-        'DIRECT_REDIRECT': True,  # optional
-        'POST_LOGOUT_REDIRECT_URI': None,  # optional
-    }
-    """
+    """Read and validate GOVBR_AUTH settings from Django settings."""
     from django.conf import settings
 
     govbr_auth = getattr(settings, "GOVBR_AUTH", {})
@@ -54,6 +38,11 @@ def get_govbr_settings():
     default_base_url = STAGING_BASE_URL if environment == "staging" else PRODUCTION_BASE_URL
     base_url = govbr_auth.get("BASE_URL") or default_base_url
 
+    # Legacy USER_MAPPER compatibility
+    default_mappers = ["django_govbr_auth.mappers.DefaultAttrMapUserMapper"]
+    if "USER_MAPPER" in govbr_auth:
+        default_mappers = [govbr_auth["USER_MAPPER"]]
+
     return {
         "client_id": govbr_auth["CLIENT_ID"],
         "client_secret": govbr_auth["CLIENT_SECRET"],
@@ -63,6 +52,11 @@ def get_govbr_settings():
         "scopes": govbr_auth.get("SCOPES", ["openid", "email", "profile"]),
         "user_lookup_field": govbr_auth.get("USER_LOOKUP_FIELD", "username"),
         "user_attr_map": govbr_auth.get("USER_ATTR_MAP", DEFAULT_USER_ATTR_MAP),
+        "user_info_fetchers": govbr_auth.get(
+            "USER_INFO_FETCHERS", ["django_govbr_auth.fetchers.DefaultEndpointsUserInfoFetcher"]
+        ),
+        "user_info_endpoints": govbr_auth.get("USER_INFO_ENDPOINTS", DEFAULT_GOVBR_ENDPOINTS),
+        "user_info_mappers": govbr_auth.get("USER_INFO_MAPPERS", default_mappers),
         "json_field": govbr_auth.get("USER_JSON_FIELD", None),
         "direct_redirect": govbr_auth.get("DIRECT_REDIRECT", True),
         "post_logout_redirect_uri": govbr_auth.get("POST_LOGOUT_REDIRECT_URI", None),
@@ -77,35 +71,24 @@ def get_govbr_settings():
 
 def _extract_nested(data, dotted_key):
     """Extract a value from a (possibly nested) dict using a dotted key path."""
-    keys = dotted_key.split(".")
-    value = data
-    for key in keys:
-        if not isinstance(value, dict):
-            return None
-        value = value.get(key)
-        if value is None:
-            return None
-    return value
+    from .mappers import _extract_nested as mapper_extract
+    return mapper_extract(data, dotted_key)
 
 
-def apply_user_attr_map(user_info, attr_map):
-    """Translate a Gov.br user_info dict into a flat dict of user model field→value pairs."""
-    result = {}
-    for model_field, govbr_key in attr_map.items():
-        if govbr_key == "fulljson":
-            result[model_field] = user_info
-            continue
-        value = _extract_nested(user_info, govbr_key)
-        if value is None:
-            continue
-        if isinstance(model_field, (list, tuple)) and len(model_field) == 2:
-            field_a, field_b = model_field
-            parts = str(value).split(" ", 1)
-            result[field_a] = parts[0]
-            result[field_b] = parts[1] if len(parts) > 1 else ""
-        else:
-            result[model_field] = value
-    return result
+def get_user_mapper(cfg=None):
+    """Instantiate and return the configured Gov.br user mapper chain or first mapper."""
+    from .mappers import get_user_info_mappers
+    mappers = get_user_info_mappers(cfg)
+    return mappers[0] if mappers else None
+
+
+def apply_user_attr_map(user_info, attr_map, cfg=None):
+    """Translate a Gov.br user_info dict into a flat dict of user model field→value pairs.
+
+    Executes the configured USER_INFO_MAPPERS Chain of Responsibility.
+    """
+    from .mappers import run_user_info_mapper_chain
+    return run_user_info_mapper_chain(user_info, attr_map, cfg=cfg)
 
 
 def get_oauth2_client():

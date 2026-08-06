@@ -60,7 +60,7 @@ class GovBrAuthBackend:
 
     def get_user_attrs(self, govbr_user_info, cfg):
         """Return a dict of model-field → value built from *govbr_user_info*."""
-        attrs = apply_user_attr_map(govbr_user_info, cfg["user_attr_map"])
+        attrs = apply_user_attr_map(govbr_user_info, cfg["user_attr_map"], cfg=cfg)
         if cfg["json_field"]:
             attrs[cfg["json_field"]] = govbr_user_info
         return attrs

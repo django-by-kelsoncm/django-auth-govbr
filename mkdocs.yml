@@ -15,6 +15,7 @@ nav:
   - Configuração: configuration.md
   - Fluxo & PKCE: auth-flow.md
   - Mapeamento de Atributos: attribute-mapping.md
+  - Pipeline de Perfil de Usuário: user-info-pipeline.md
   - Escopos & Ambientes: scopes.md
   - Single Sign-Out (Logout): logout.md
   - Referência da API: api-reference.md

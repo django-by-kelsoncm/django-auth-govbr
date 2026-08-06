@@ -22,7 +22,9 @@ Backend de autenticação Django extensível e moderno para integração com o *
 ## 📦 Instalação
 
 ```bash
-pip install django-auth-govbr
+uv add django-auth-govbr
+# ou via pip:
+# pip install django-auth-govbr
 ```
 
 ---
@@ -84,9 +86,18 @@ urlpatterns = [
 | `SCOPES` | `list` | `["openid", "email", "profile"]` | Escopos OIDC solicitados |
 | `USER_LOOKUP_FIELD` | `str` | `"username"` | Campo do modelo User usado para busca local |
 | `USER_ATTR_MAP` | `dict` | Mapeia `sub` → `username`, `email` → `email`, `name` → `(first_name, last_name)` | Mapeamento de campos do Gov.br |
+| `USER_INFO_FETCHERS` | `list` | `["django_govbr_auth.fetchers.DefaultEndpointsUserInfoFetcher"]` | Lista de classes fetcher na Cadeia de Responsabilidade |
+| `USER_INFO_ENDPOINTS` | `list` | `["/userinfo"]` | Lista de endpoints OIDC/API a consultar e mesclar |
+| `USER_INFO_MAPPERS` | `list` | `["django_govbr_auth.mappers.DefaultAttrMapUserMapper"]` | Lista de classes mapper na Cadeia de Responsabilidade |
+| `USER_JSON_FIELD` | `str` | `None` | Campo `JSONField` para gravar o retorno bruto do Gov.br |
 | `CREATE_USER` | `bool` | `True` | Se cria usuário local caso não exista |
+| `USER_DEFAULTS` | `dict` | `{"is_active": True}` | Valores padrão aplicados na criação do usuário |
+| `FIRST_USER_DEFAULTS` | `dict` | `None` | Valores aplicados exclusivamente ao primeiro usuário criado |
+| `UPDATE_FIELDS_ON_CREATE` | `list` | `None` | Campos gravados ao criar o usuário (`None` = todos) |
+| `UPDATE_FIELDS_ON_LOGIN` | `list` | `None` | Campos atualizados a cada login (`None` = todos) |
 | `DIRECT_REDIRECT` | `bool` | `True` | Se redireciona direto ao Gov.br ou exibe confirmação |
 | `POST_LOGOUT_REDIRECT_URI` | `str` | `None` | URI de retorno após o Single Sign-Out |
+| `BACKEND` | `str` | `"django_govbr_auth.backends.GovBrAuthBackend"` | Caminho da classe backend de autenticação |
 
 ---
 
