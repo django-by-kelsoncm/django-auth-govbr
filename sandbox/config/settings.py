@@ -76,7 +76,7 @@ AUTHENTICATION_BACKENDS = [
 GOVBR_AUTH = {
     "CLIENT_ID": os.getenv("GOVBR_CLIENT_ID", "demo-client-id"),
     "CLIENT_SECRET": os.getenv("GOVBR_CLIENT_SECRET", "demo-client-secret"),
-    "REDIRECT_URI": os.getenv("GOVBR_REDIRECT_URI", "http://localhost:8000/auth/govbr/callback/"),
+    "REDIRECT_URI": os.getenv("GOVBR_REDIRECT_URI", "http://localhost:8001/auth/govbr/callback/"),
     "ENVIRONMENT": os.getenv("GOVBR_ENVIRONMENT", "staging"),
 }
 
