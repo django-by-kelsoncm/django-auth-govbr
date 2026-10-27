@@ -65,3 +65,8 @@ select = ["E", "F", "W", "I"]
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["django_govbr_auth*"]
+
+[tool.uv]
+# O lock é só de desenvolvimento (a CI instala via pip). O filelock corrigido exige Python >= 3.11,
+# então o lock não resolve para 3.10; o pacote em si continua compatível com 3.10 (requires-python).
+environments = ["python_version >= '3.11'"]
