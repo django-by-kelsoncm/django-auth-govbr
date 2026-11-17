@@ -113,6 +113,7 @@ class DefaultAttrMapUserMapper(BaseUserMapper):
 
 
 # Aliases for backward compatibility
+resolve_callable = resolve_callable_or_class
 BaseGovBrUserMapper = BaseUserMapper
 DefaultGovBrUserMapper = DefaultAttrMapUserMapper
 
@@ -124,9 +125,7 @@ def get_user_info_mappers(cfg=None):
     if cfg is None:
         cfg = get_govbr_settings()
 
-    mapper_targets = cfg.get(
-        "user_info_mappers", ["django_govbr_auth.mappers.DefaultAttrMapUserMapper"]
-    )
+    mapper_targets = cfg.get("user_info_mappers", ["django_govbr_auth.mappers.DefaultAttrMapUserMapper"])
     mappers = []
 
     for target in mapper_targets:
@@ -141,6 +140,12 @@ def get_user_info_mappers(cfg=None):
 
 def run_user_info_mapper_chain(user_info, attr_map=None, cfg=None):
     """Execute the Chain of Responsibility for mapping user_info to model field attributes."""
+    if cfg is None:
+        from .utils import get_govbr_settings
+
+        cfg = get_govbr_settings()
+    if attr_map is not None:
+        cfg = {**cfg, "user_attr_map": attr_map}
     mappers = get_user_info_mappers(cfg)
     attrs = {}
 

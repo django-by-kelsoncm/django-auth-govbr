@@ -1,10 +1,15 @@
 from datetime import date
 from unittest.mock import MagicMock, patch
 
-from django.core.files.base import ContentFile
 import pytest
+from django.core.files.base import ContentFile
 
-from django_govbr_auth.mappers import BaseGovBrUserMapper, DefaultGovBrUserMapper, resolve_callable
+from django_govbr_auth.mappers import (
+    BaseGovBrUserMapper,
+    DefaultGovBrUserMapper,
+    get_user_info_mappers,
+    resolve_callable,
+)
 from django_govbr_auth.transformers import fetch_image_file, format_cpf, parse_date, to_bool, to_lower, to_upper
 from django_govbr_auth.utils import apply_user_attr_map, get_govbr_settings, get_user_mapper
 
@@ -79,8 +84,8 @@ def test_mapper_lambda_and_callable_in_attr_map():
         "username": "sub",
         "full_name": lambda info: f"Gov. {info['name']}",
     }
-    mapper = DefaultGovBrUserMapper()
-    result = mapper.map_attributes(info, attr_map)
+    mapper = DefaultGovBrUserMapper(govbr_settings={"user_attr_map": attr_map})
+    result = mapper.map_attributes(info)
 
     assert result["username"] == "12345678901"
     assert result["full_name"] == "Gov. Maria Silva"
@@ -96,8 +101,8 @@ def test_mapper_dict_spec_with_transformer_and_default():
         "picture_url": {"key": "picture"},
         "status": {"key": "status", "default": "ativo"},
     }
-    mapper = DefaultGovBrUserMapper()
-    result = mapper.map_attributes(info, attr_map)
+    mapper = DefaultGovBrUserMapper(govbr_settings={"user_attr_map": attr_map})
+    result = mapper.map_attributes(info)
 
     assert result["cpf"] == "123.456.789-01"
     assert result["picture_url"] == "https://acesso.gov.br/foto.jpg"
@@ -116,13 +121,14 @@ def test_custom_user_mapper_setting(settings):
         "CLIENT_ID": "test-id",
         "CLIENT_SECRET": "test-secret",
         "REDIRECT_URI": "http://localhost/callback/",
-        "USER_INFO_MAPPERS": [CustomTestUserMapper],
+        "USER_INFO_MAPPERS": ["django_govbr_auth.mappers.DefaultAttrMapUserMapper", CustomTestUserMapper],
         "USER_ATTR_MAP": {"username": "sub"},
     }
 
     cfg = get_govbr_settings()
-    mapper = get_user_mapper(cfg)
-    assert isinstance(mapper, CustomTestUserMapper)
+    mappers = get_user_info_mappers(cfg)
+    assert isinstance(get_user_mapper(cfg), DefaultGovBrUserMapper)
+    assert isinstance(mappers[-1], CustomTestUserMapper)
 
     info = {"sub": "12345678901"}
     result = apply_user_attr_map(info, cfg["user_attr_map"], cfg=cfg)

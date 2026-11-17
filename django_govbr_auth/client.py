@@ -11,11 +11,26 @@ TOKEN_PATH = "/token"
 USER_INFO_PATH = "/userinfo"
 LOGOUT_PATH = "/logout"
 
+CLIENT_SECRET_BASIC = "client_secret_basic"
+CLIENT_SECRET_POST = "client_secret_post"
+TOKEN_AUTH_METHODS = (CLIENT_SECRET_BASIC, CLIENT_SECRET_POST)
+
 
 class GovBrOAuth2Client:
     """Handles the OIDC / OAuth2 authorization code flow with Gov.br (including PKCE)."""
 
-    def __init__(self, client_id, client_secret, redirect_uri, scopes=None, base_url=None):
+    def __init__(
+        self,
+        client_id,
+        client_secret,
+        redirect_uri,
+        scopes=None,
+        base_url=None,
+        token_auth_method=CLIENT_SECRET_BASIC,
+    ):
+        if token_auth_method not in TOKEN_AUTH_METHODS:
+            raise ValueError(f"token_auth_method must be one of {TOKEN_AUTH_METHODS}, got {token_auth_method!r}")
+        self.token_auth_method = token_auth_method
         self.client_id = client_id
         self.client_secret = client_secret
         self.redirect_uri = redirect_uri
@@ -23,7 +38,7 @@ class GovBrOAuth2Client:
         self.base_url = (base_url or DEFAULT_BASE_URL).rstrip("/")
         self._session = requests.Session()
 
-    def get_authorization_url(self, state, code_challenge):
+    def get_authorization_url(self, state, code_challenge, nonce=None):
         """Return the full authorization URL to redirect the user to Gov.br SSO."""
         params = {
             "response_type": "code",
@@ -34,21 +49,31 @@ class GovBrOAuth2Client:
             "code_challenge": code_challenge,
             "code_challenge_method": "S256",
         }
+        if nonce:
+            params["nonce"] = nonce
         return f"{self.base_url}{AUTHORIZE_PATH}?{urlencode(params)}"
 
     def exchange_code_for_token(self, code, code_verifier, timeout=30):
-        """Exchange an authorization code and code_verifier for access/ID tokens."""
+        """Exchange an authorization code and code_verifier for access/ID tokens.
+
+        The client authenticates with HTTP Basic (``client_secret_basic``, as the Login Único technical guide
+        documents) or, for compatibility, with the credentials in the form body (``client_secret_post``).
+        """
         url = f"{self.base_url}{TOKEN_PATH}"
         data = {
             "grant_type": "authorization_code",
             "code": code,
             "redirect_uri": self.redirect_uri,
             "code_verifier": code_verifier,
-            "client_id": self.client_id,
-            "client_secret": self.client_secret,
         }
+        auth = None
+        if self.token_auth_method == CLIENT_SECRET_BASIC:
+            auth = (self.client_id, self.client_secret)
+        else:
+            data["client_id"] = self.client_id
+            data["client_secret"] = self.client_secret
         try:
-            response = self._session.post(url, data=data, timeout=timeout)
+            response = self._session.post(url, data=data, auth=auth, timeout=timeout)
             response.raise_for_status()
             return response.json()
         except requests.HTTPError as exc:

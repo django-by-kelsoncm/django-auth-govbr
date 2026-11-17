@@ -10,11 +10,12 @@ Backend de autenticação Django extensível e moderno para integração com o *
 
 ## 🛠️ Recursos
 
-- **OpenID Connect (OIDC) com PKCE (`S256`)**: Atende aos padrões e recomendações de segurança do Login Único Gov.br.
+- **OpenID Connect (OIDC) com PKCE (`S256`), `state` e `nonce`**: Atende aos padrões e recomendações de segurança do Login Único Gov.br, com HTTP Basic no `/token`.
 - **Suporte Nativo a Ambientes**: Alterna facilmente entre Homologação (`https://sso.staging.acesso.gov.br`) e Produção (`https://sso.acesso.gov.br`).
 - **Single Sign-Out (Logout)**: View e cliente com suporte a logout federado OIDC via `id_token_hint` e `post_logout_redirect_uri`.
 - **Mapeamento de Atributos Customizável**: Mapeie facilmente campos da API do Gov.br (`sub`, `name`, `email`, etc.) para o modelo de usuário do Django.
 - **Extensibilidade**: Sobrescreva métodos do `GovBrAuthBackend` para controlar criação e atualização de usuários.
+- **Login Handlers**: Troque a abertura da sessão local (`LOGIN_HANDLER`) para usar o pacote mesmo sem `django.contrib.auth` nem banco (ex.: contas mantidas por uma API).
 - **100% de Cobertura de Testes**.
 
 ---
@@ -98,6 +99,9 @@ urlpatterns = [
 | `DIRECT_REDIRECT` | `bool` | `True` | Se redireciona direto ao Gov.br ou exibe confirmação |
 | `POST_LOGOUT_REDIRECT_URI` | `str` | `None` | URI de retorno após o Single Sign-Out |
 | `BACKEND` | `str` | `"django_govbr_auth.backends.GovBrAuthBackend"` | Caminho da classe backend de autenticação |
+| `LOGIN_HANDLER` | `str` | `"django_govbr_auth.handlers.DjangoAuthLoginHandler"` | Quem abre a sessão local, trata erros e faz o logout local |
+| `TOKEN_AUTH_METHOD` | `str` | `"client_secret_basic"` | `"client_secret_basic"` (HTTP Basic) ou `"client_secret_post"` (corpo) |
+| `USE_NONCE` | `bool` | `True` | Envia `nonce` e confere no `id_token` |
 
 ---
 

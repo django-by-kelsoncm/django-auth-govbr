@@ -59,3 +59,6 @@ LOGOUT_REDIRECT_URL = "/"
 - **`DIRECT_REDIRECT`** (`bool`, padrão: `True`): Se `True`, o usuário é redirecionado imediatamente ao Gov.br. Se `False`, renderiza a página intermediária `django_govbr_auth/login.html`.
 - **`POST_LOGOUT_REDIRECT_URI`** (`str`, padrão: `None`): URI de retorno após realizar o logout federado OIDC.
 - **`BACKEND`** (`str`, padrão: `"django_govbr_auth.backends.GovBrAuthBackend"`): Caminho da classe backend de autenticação.
+- **`LOGIN_HANDLER`** (`str`, classe ou instância, padrão: `"django_govbr_auth.handlers.DjangoAuthLoginHandler"`): Quem abre a sessão local depois do callback, trata os erros e encerra a sessão no logout. Troque por uma subclasse de `BaseLoginHandler` em projetos sem `django.contrib.auth`. Veja [Login Handlers](login-handlers.md).
+- **`TOKEN_AUTH_METHOD`** (`str`, padrão: `"client_secret_basic"`): Como o cliente se autentica no `/token`. `"client_secret_basic"` envia `CLIENT_ID:CLIENT_SECRET` em HTTP Basic, como documenta o roteiro técnico do Login Único; `"client_secret_post"` envia as credenciais no corpo (comportamento das versões até 1.2).
+- **`USE_NONCE`** (`bool`, padrão: `True`): Envia um `nonce` no `/authorize` e confere o claim `nonce` do `id_token` no callback. Com `True`, a resposta do `/token` precisa trazer `id_token` (escopo `openid`).

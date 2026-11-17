@@ -6,7 +6,7 @@ O **`django-auth-govbr`** fornece suporte nativo ao enquadramento de logout OIDC
 
 1. Durante o callback de autenticação bem-sucedido, o pacote salva o `id_token` retornado pelo Gov.br na sessão do Django (`request.session["govbr_id_token"]`).
 2. Quando o usuário acessa a view `GovBrLogoutView` (`/auth/govbr/logout/`):
-   - A sessão local do Django é encerrada via `logout(request)`.
+   - A sessão local é encerrada pelo `logout(request)` do [login handler](login-handlers.md) (no padrão, `django.contrib.auth.logout`).
    - A aplicação redireciona o usuário para o endpoint `/logout` do Gov.br com os parâmetros:
      - `id_token_hint`: O token de identificação salvo na sessão.
      - `post_logout_redirect_uri`: A URL de retorno cadastrada ou especificada.

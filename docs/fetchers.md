@@ -108,3 +108,16 @@ class ExternalLdapFetcher(BaseUserInfoFetcher):
 
 - `get_user_info_fetchers(cfg=None)`: retorna a lista de instâncias dos fetchers configurados.
 - `run_user_info_fetcher_chain(client, access_token, cfg=None)`: executa toda a cadeia de fetchers e retorna o dicionário `user_info` consolidado.
+
+## Endpoints obrigatórios
+
+Uma falha no `/userinfo` interrompe o login com `GovBrUserInfoError`: sem perfil não há login. Falhas nos demais
+endpoints são registradas em log e ignoradas. Para mudar isso em um endpoint, use a chave `required` na forma de
+dicionário:
+
+```python
+"USER_INFO_ENDPOINTS": [
+    "/userinfo",
+    {"endpoint": "https://api.staging.acesso.gov.br/confiabilidades/v3/contas/{cpf}/niveis", "required": True},
+]
+```

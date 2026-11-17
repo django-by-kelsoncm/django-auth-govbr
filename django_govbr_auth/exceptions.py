@@ -32,3 +32,18 @@ class GovBrAuthenticationError(GovBrAuthError):
     """Raised when user authentication or creation fails during the callback flow."""
 
     pass
+
+
+class GovBrNonceMismatchError(GovBrStateMismatchError):
+    """Raised when the ``nonce`` claim of the ID token does not match the one sent in the authorization request."""
+
+    pass
+
+
+class GovBrProviderError(GovBrAuthError):
+    """Raised when Gov.br redirects back with an ``error`` parameter (e.g. the user cancelled the login)."""
+
+    def __init__(self, error, description=None):
+        self.error = error
+        self.description = description
+        super().__init__(f"Gov.br returned error '{error}'" + (f": {description}" if description else ""))

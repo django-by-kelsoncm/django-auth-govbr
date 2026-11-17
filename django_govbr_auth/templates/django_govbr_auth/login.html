@@ -46,6 +46,7 @@
         <p>Clique no botão abaixo para prosseguir com o seu login único do Governo Federal.</p>
         <form method="post">
             {% csrf_token %}
+            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
             <button type="submit" class="govbr-btn">Entrar com gov.br</button>
         </form>
     </div>

@@ -31,8 +31,24 @@ class BaseUserInfoFetcher:
         return user_info
 
 
+def _is_required(endpoint_spec):
+    """``/userinfo`` is required by default (no profile, no login); other endpoints are optional.
+
+    A dict spec may override it with ``"required": True/False``.
+    """
+    if isinstance(endpoint_spec, dict):
+        if "required" in endpoint_spec:
+            return bool(endpoint_spec["required"])
+        endpoint_spec = endpoint_spec.get("endpoint") or ""
+    return str(endpoint_spec).rstrip("/") in ("/userinfo", "userinfo")
+
+
 class DefaultEndpointsUserInfoFetcher(BaseUserInfoFetcher):
-    """Fetcher link that iterates over GOVBR_AUTH['USER_INFO_ENDPOINTS'] and merges profile data."""
+    """Fetcher link that iterates over GOVBR_AUTH['USER_INFO_ENDPOINTS'] and merges profile data.
+
+    A failure on a required endpoint (``/userinfo`` by default) is re-raised; failures on optional endpoints are
+    logged and skipped.
+    """
 
     def fetch(self, client, access_token, user_info=None):
         if user_info is None:
@@ -68,6 +84,8 @@ class DefaultEndpointsUserInfoFetcher(BaseUserInfoFetcher):
                     elif isinstance(data_to_store, dict):
                         user_info.update(data_to_store)
             except Exception as exc:
+                if _is_required(endpoint_spec):
+                    raise
                 logger.warning("Failed to fetch Gov.br user info endpoint '%s': %s", endpoint_spec, exc)
 
         return user_info
@@ -80,9 +98,7 @@ def get_user_info_fetchers(cfg=None):
     if cfg is None:
         cfg = get_govbr_settings()
 
-    fetcher_targets = cfg.get(
-        "user_info_fetchers", ["django_govbr_auth.fetchers.DefaultEndpointsUserInfoFetcher"]
-    )
+    fetcher_targets = cfg.get("user_info_fetchers", ["django_govbr_auth.fetchers.DefaultEndpointsUserInfoFetcher"])
     fetchers = []
 
     for target in fetcher_targets:

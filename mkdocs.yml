@@ -19,6 +19,7 @@ nav:
   - Fetchers (Busca de Dados): fetchers.md
   - Mappers (Mapeamento): mappers.md
   - Escopos & Ambientes: scopes.md
+  - Login Handlers (Sessão Local): login-handlers.md
   - Single Sign-Out (Logout): logout.md
   - Referência da API: api-reference.md
   - Histórico de Mudanças: changelog.md

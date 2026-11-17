@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import json
 import secrets
 
 from django.core.exceptions import ImproperlyConfigured
@@ -61,6 +62,9 @@ def get_govbr_settings():
         "direct_redirect": govbr_auth.get("DIRECT_REDIRECT", True),
         "post_logout_redirect_uri": govbr_auth.get("POST_LOGOUT_REDIRECT_URI", None),
         "backend": govbr_auth.get("BACKEND", "django_govbr_auth.backends.GovBrAuthBackend"),
+        "login_handler": govbr_auth.get("LOGIN_HANDLER", "django_govbr_auth.handlers.DjangoAuthLoginHandler"),
+        "token_auth_method": govbr_auth.get("TOKEN_AUTH_METHOD", "client_secret_basic"),
+        "use_nonce": govbr_auth.get("USE_NONCE", True),
         "create_user": govbr_auth.get("CREATE_USER", True),
         "user_defaults": govbr_auth.get("USER_DEFAULTS", {"is_active": True}),
         "first_user_defaults": govbr_auth.get("FIRST_USER_DEFAULTS", None),
@@ -72,12 +76,14 @@ def get_govbr_settings():
 def _extract_nested(data, dotted_key):
     """Extract a value from a (possibly nested) dict using a dotted key path."""
     from .mappers import _extract_nested as mapper_extract
+
     return mapper_extract(data, dotted_key)
 
 
 def get_user_mapper(cfg=None):
     """Instantiate and return the configured Gov.br user mapper chain or first mapper."""
     from .mappers import get_user_info_mappers
+
     mappers = get_user_info_mappers(cfg)
     return mappers[0] if mappers else None
 
@@ -88,6 +94,7 @@ def apply_user_attr_map(user_info, attr_map, cfg=None):
     Executes the configured USER_INFO_MAPPERS Chain of Responsibility.
     """
     from .mappers import run_user_info_mapper_chain
+
     return run_user_info_mapper_chain(user_info, attr_map, cfg=cfg)
 
 
@@ -102,12 +109,35 @@ def get_oauth2_client():
         redirect_uri=cfg["redirect_uri"],
         scopes=cfg["scopes"],
         base_url=cfg["base_url"],
+        token_auth_method=cfg["token_auth_method"],
     )
 
 
 def generate_state():
     """Generate a cryptographically secure random state token for OAuth2 CSRF protection."""
     return secrets.token_urlsafe(32)
+
+
+def generate_nonce():
+    """Generate a random OIDC ``nonce``, bound to the session and checked against the ID token."""
+    return secrets.token_urlsafe(32)
+
+
+def decode_jwt_payload(token):
+    """Return the claims of a JWT **without verifying its signature**.
+
+    Only for an ID token received directly from the token endpoint over TLS, where OIDC Core (3.1.3.7, item 6)
+    allows TLS server validation in place of the signature check. Raises ``ValueError`` on a malformed token.
+    """
+    try:
+        payload = token.split(".")[1]
+        payload += "=" * (-len(payload) % 4)
+        claims = json.loads(base64.urlsafe_b64decode(payload.encode("ascii")))
+    except (AttributeError, IndexError, UnicodeError, ValueError) as exc:
+        raise ValueError(f"Malformed JWT: {exc}") from exc
+    if not isinstance(claims, dict):
+        raise ValueError("Malformed JWT: payload is not a JSON object")
+    return claims
 
 
 def generate_pkce_pair():
