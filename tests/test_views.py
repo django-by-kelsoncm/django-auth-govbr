@@ -134,7 +134,7 @@ def test_callback_user_info_error(mock_get_client, django_client):
 
 @pytest.mark.django_db
 @patch("django_govbr_auth.views.get_oauth2_client")
-@patch("django_govbr_auth.views.authenticate")
+@patch("django.contrib.auth.authenticate")
 def test_callback_user_not_allowed_error(mock_auth, mock_get_client, django_client):
     mock_oauth = MagicMock()
     mock_oauth.exchange_code_for_token.return_value = {"access_token": "token123"}
@@ -156,7 +156,7 @@ def test_callback_user_not_allowed_error(mock_auth, mock_get_client, django_clie
 
 @pytest.mark.django_db
 @patch("django_govbr_auth.views.get_oauth2_client")
-@patch("django_govbr_auth.views.authenticate")
+@patch("django.contrib.auth.authenticate")
 def test_callback_authentication_error(mock_auth, mock_get_client, django_client):
     mock_oauth = MagicMock()
     mock_oauth.exchange_code_for_token.return_value = {"access_token": "token123"}
@@ -178,8 +178,8 @@ def test_callback_authentication_error(mock_auth, mock_get_client, django_client
 
 @pytest.mark.django_db
 @patch("django_govbr_auth.views.get_oauth2_client")
-@patch("django_govbr_auth.views.login")
-@patch("django_govbr_auth.views.urlsplit")
+@patch("django.contrib.auth.login")
+@patch("django_govbr_auth.handlers.urlsplit")
 def test_callback_unexpected_exception(mock_urlsplit, mock_login, mock_get_client, django_client):
     User.objects.create_user(username="12345678901")
 
@@ -203,7 +203,7 @@ def test_callback_unexpected_exception(mock_urlsplit, mock_login, mock_get_clien
 
 @pytest.mark.django_db
 @patch("django_govbr_auth.views.get_oauth2_client")
-@patch("django_govbr_auth.views.login")
+@patch("django.contrib.auth.login")
 def test_callback_success_and_safe_next(mock_login, mock_get_client, django_client):
     User.objects.create_user(username="12345678901", email="carlos@example.com")
 
@@ -227,7 +227,7 @@ def test_callback_success_and_safe_next(mock_login, mock_get_client, django_clie
 
 @pytest.mark.django_db
 @patch("django_govbr_auth.views.get_oauth2_client")
-@patch("django_govbr_auth.views.login")
+@patch("django.contrib.auth.login")
 def test_callback_success_unsafe_next_fallback(mock_login, mock_get_client, django_client):
     User.objects.create_user(username="12345678901")
 

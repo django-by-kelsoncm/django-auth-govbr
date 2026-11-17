@@ -94,7 +94,7 @@ def test_get_user_info_http_error(client):
     )
     with pytest.raises(GovBrUserInfoError) as exc_info:
         client.get_user_info("token123")
-    assert "Failed to fetch user info" in str(exc_info.value)
+    assert "Failed to fetch endpoint" in str(exc_info.value)
 
 
 def test_get_user_info_request_exception(client, monkeypatch):
@@ -104,7 +104,7 @@ def test_get_user_info_request_exception(client, monkeypatch):
     monkeypatch.setattr(client._session, "get", mock_get)
     with pytest.raises(GovBrUserInfoError) as exc_info:
         client.get_user_info("token123")
-    assert "User info request error" in str(exc_info.value)
+    assert "request error" in str(exc_info.value)
 
 
 def test_get_user_info_unexpected_exception(client, monkeypatch):
@@ -114,7 +114,7 @@ def test_get_user_info_unexpected_exception(client, monkeypatch):
     monkeypatch.setattr(client._session, "get", mock_get)
     with pytest.raises(GovBrUserInfoError) as exc_info:
         client.get_user_info("token123")
-    assert "User info unexpected error" in str(exc_info.value)
+    assert "unexpected error" in str(exc_info.value)
 
 
 def test_get_logout_url(client):
